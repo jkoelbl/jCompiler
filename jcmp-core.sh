@@ -1,4 +1,19 @@
-version="jCompiler - version 0.0"
+version="jCompiler - version 0.1"
+
+function get_verstype(){
+	IFS='=' read -ra type<<<$1; IFS=''
+	if [[ ${type[0]} == "-$2" ]]; then
+		case "$2" in
+		"py")	echo $1 ;;
+		"cpp")	echo "-std=c++${type[1]}" ;;
+		"c")	echo "-std=c${type[1]}" ;;
+		*)	;;
+		esac
+	else
+		echo ""
+	fi
+}
+
 function get_filetype(){
 	local file=$1
 	local out=""
@@ -38,5 +53,6 @@ elif
 	echo "       -f [filename], -v [version]"
 else
 	type=$(get_filetype $1)
-	echo $(compile $1 $type $2)
+	v=$(get_verstype $2 $type)
+	echo $(compile $1 $type $v)
 fi
