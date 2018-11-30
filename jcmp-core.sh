@@ -16,30 +16,30 @@ function get_verstype(){
 
 function get_filetype(){
 	local file=$1
-	local out=""
+	local out="_"
 	local size=${#file}
 	for (( i=0; i<$size; i=i+1 )); do
-		if [[ ${file[0]} == "." ]]; then
+		if [[ ${file:$i:1} == "." ]]; then
 			out=${file:$i+1:$size-1}
 			break;
 		fi
 	done
-	return out
+	echo $out
 }
 
 # 1=filename; 2=filetype; 3=version
 function compile(){
 	case "$2" in
-	"js")	node $1
-	"rb")	ruby $1
-	"sh")	./$1
-	"exe")	./$1
-	"")	./$1
-	"py")	jcmp/sh/jcmp-py.sh $1 $3 ;;
-	"java")	jcmp/sh/jcmp-java.sh $1 ;;
-	"cpp")	jcmp/sh/jcmp-cpp.sh $1 $3 ;;
-	"c")	jcmp/sh/jcmp-c.sh $1 $3 ;;
-	"asm")	jcompiler/sh/jcmp-s.sh $1 ;;
+	"_")	./$1 ;;
+	"s")	sh/jcmp-s.sh $1 ;;
+	"c")	sh/jcmp-c.sh $1 $3 ;;
+	"cpp")	sh/jcmp-cpp.sh $1 $3 ;;
+	"js")	node $1 ;;
+	"rb")	ruby $1 ;;
+	"sh")	./$1 ;;
+	"exe")	./$1 ;;
+	"py")	sh/jcmp-py.sh $1 $3 ;;
+	"java")	sh/jcmp-java.sh $1 ;;
 	*)	echo "unsupported filetype - $2" ;;
 	esac
 	echo ""
@@ -47,7 +47,7 @@ function compile(){
 
 if [[ $1 == "--version" ]]; then
 	echo $version
-elif
+elif [[ $1 == "" ]]; then
 	echo "Usage:"
 	echo "       --version [version]"
 	echo "       -f [filename], -v [version]"
